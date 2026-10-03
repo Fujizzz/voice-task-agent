@@ -1,0 +1,8 @@
+{
+  "profile": {
+    "name": "Example Candidate",
+    "projects": [
+      {"name": "Document assistant", "description": "A sample project using document retrieval and a chat interface.", "technologies": ["Python", "SQLite"]}
+    ]
+  }
+}
