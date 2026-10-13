@@ -1,6 +1,6 @@
 {
   "notes": [
-    "Whisper converts speech audio into text. This project supports completed utterances, not streaming recognition.",
+    "Whisper converts complete audio segments into text.",
     "The runtime separates planning from bounded tool execution. Tool results are validated and included as observations.",
     "SQLite persists session state and request results. Replaying the same request ID and input does not call the model again."
   ]

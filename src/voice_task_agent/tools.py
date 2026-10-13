@@ -21,11 +21,7 @@ class Tool:
 
 
 class ToolRegistry:
-    """Tools are application-owned, never constructed from model-generated code.
-
-    v0.1 only admits read-only async tools. Cancelling a coroutine cannot undo an
-    external write, so write tools require a separate durable execution protocol.
-    """
+    """Register and dispatch application-owned async read-only tools."""
 
     def __init__(self, tools: list[Tool] = ()):
         self._tools: dict[str, Tool] = {}

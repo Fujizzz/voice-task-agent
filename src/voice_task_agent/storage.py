@@ -1,8 +1,4 @@
-"""SQLite sessions with atomic turn commits and cross-process request reservation.
-
-Generalizes AiInterviewer's commit_turn, version check and feedback replay design.
-Database operations are short and never hold a transaction across a model call.
-"""
+"""SQLite sessions with atomic turn commits and cross-process request reservation."""
 
 import hashlib
 import json
@@ -125,7 +121,7 @@ class SQLiteStore:
             )
 
     def recover(self, session_id: str) -> int:
-        """Release a crashed worker's reservation. Caller MUST first stop that worker."""
+        """Release a crashed request after its worker has stopped."""
         with self._lock, self._db:
             self.get(session_id)
             cursor = self._db.execute(

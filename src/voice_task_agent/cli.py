@@ -17,12 +17,10 @@ from .storage import SQLiteStore
 
 def parser():
     result = argparse.ArgumentParser(
-        description="Voice-capable task agents; no API calls in --demo mode"
+        description="Voice-enabled task agents with planning and persistent sessions"
     )
     result.add_argument("--app", choices=["interviewer", "knowledge"], default="knowledge")
-    result.add_argument(
-        "--demo", action="store_true", help="Use deterministic offline responses, not an LLM"
-    )
+    result.add_argument("--demo", action="store_true", help="Use deterministic offline responses")
     result.add_argument(
         "--context", type=Path, help="UTF-8 JSON application context, required for new sessions"
     )

@@ -1,4 +1,4 @@
-"""OpenAI-compatible HTTP model transport plus an explicitly offline demo model."""
+"""OpenAI-compatible model transport and an offline demo provider."""
 
 import json
 from typing import Literal
@@ -12,12 +12,7 @@ from .errors import InvalidModelOutput, ModelError
 
 
 class CompatibleModel:
-    """Chat Completions JSON adapter for hosted or local compatible endpoints.
-
-    No provider-specific reasoning flags, automatic retries, or hidden fallback calls.
-    json_object is broadly compatible; select text if the server rejects response_format.
-    schema validation always runs locally, regardless of the server's JSON guarantees.
-    """
+    """Chat Completions adapter with local response-schema validation."""
 
     def __init__(
         self,
@@ -99,7 +94,7 @@ class CompatibleModel:
 
 
 class DemoModel:
-    """Deterministic wiring demonstration, NOT an LLM or evaluation benchmark."""
+    """Deterministic offline responses for examples and tests."""
 
     async def generate_structured(self, *, prompt, payload, schema):
         if schema is Plan:

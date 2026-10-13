@@ -1,8 +1,4 @@
-"""Task-neutral planning and bounded ReAct execution.
-
-Refactored from AiInterviewer's planner/service/react loop: a single shared deadline,
-limited tools and repairs, validation before publication, and atomic turn persistence.
-"""
+"""Task planning, bounded ReAct execution, and atomic turn persistence."""
 
 import asyncio
 import json
@@ -53,7 +49,7 @@ class AgentRuntime:
         if isinstance(reserved, TurnResult):
             return reserved
         trace: list[TraceEvent] = []
-        # Fallback does not invent a successful answer or tool result.
+        # Reuse the prior plan or fall back to the task goal.
         plan = reserved.plan or Plan(steps=[self.task.goal[:500]])
         try:
             if reserved.turn_count >= self.task.budget.max_turns:

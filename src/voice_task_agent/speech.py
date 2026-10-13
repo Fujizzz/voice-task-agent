@@ -1,4 +1,4 @@
-"""Utterance-based voice input; importing the core never loads audio/ML libraries."""
+"""Audio-segment transcription and microphone recording."""
 
 import asyncio
 import math
@@ -9,11 +9,7 @@ from .ports import TranscriberPort
 
 
 class WhisperTranscriber:
-    """Local Whisper inference through faster-whisper, with lazy model loading.
-
-    Loading a model name may download weights. A local directory avoids that download.
-    This adapter processes complete utterances; it is not streaming ASR or barge-in.
-    """
+    """Local Whisper transcription with lazy loading from a model name or directory."""
 
     def __init__(
         self,
@@ -48,7 +44,7 @@ class WhisperTranscriber:
 
 
 def record_wav(path: str, *, seconds: float = 5, sample_rate: int = 16000):
-    """Record a fixed utterance only when explicitly invoked by a caller."""
+    """Record a fixed-duration audio segment."""
     import wave
 
     if not math.isfinite(seconds) or not 0 < seconds <= 120 or sample_rate != 16000:
