@@ -21,7 +21,7 @@ async def read_profile(arguments, context):
 
 
 async def search_notes(arguments: SearchArguments, context):
-    """Small transparent lexical retriever, not an embedding/vector RAG pipeline."""
+    """Search local notes by lexical overlap."""
     terms = set(re.findall(r"\w+", arguments.query.casefold()))
     ranked = []
     for index, note in enumerate(context.get("notes", [])):

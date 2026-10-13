@@ -1,65 +1,71 @@
 # Voice Task Agent
 
-支持语音输入的任务型 Agent 框架。从 AI 面试官的 Agent 代码中提取通用设计，
-将语音输入、模型调用、任务规划、工具执行和会话存储分离。
+支持语音输入的任务型 Agent 框架，集成 Whisper 转写、任务规划、工具执行和多轮会话管理。
 
-## 核心结构
+[English](README.md) · [架构说明](docs/ARCHITECTURE.md)
 
-```mermaid
-flowchart TD
-  Audio[音频文件或麦克风] --> ASR[本地 Whisper]
-  ASR --> Input[统一文字输入]
-  Text[文字输入] --> Input
-  Input --> Runtime[AgentRuntime]
-  Runtime --> Planner[任务规划]
-  Planner --> Executor[有限步 ReAct 执行]
-  Executor <--> Tools[应用注册的只读工具]
-  Executor --> Validation[校验与降级]
-  Validation --> Store[原子提交状态和请求结果]
-  Store --> Output[回复或下一轮问题]
-  Runtime <--> Models[云端 API 或兼容本地服务]
-```
+## 核心功能
 
-核心不包含候选人、岗位、面试评分字段。面试官和知识问答助手都通过
-`TaskSpec + ToolRegistry + 应用上下文` 接入同一个运行核心。
+- 统一结构化模型接口，对接云端 API 和兼容 Chat Completions 的本地服务。
+- 每轮任务规划与 ReAct 执行，支持时间预算、步数限制和输出修复。
+- 工具参数校验、名称白名单和重复调用检测。
+- SQLite 会话持久化、版本检查、原子提交和请求重放。
+- Whisper 音频文件转写与麦克风输入。
+- 面试助手、本地笔记问答和自定义任务示例。
 
 ## 快速运行
+
+需要 Python 3.11 或更新版本：
 
 ```bash
 python -m pip install -e ".[dev]"
 voice-agent --demo --app interviewer --context examples/interviewer.json --text "开始面试"
 voice-agent --demo --app knowledge --context examples/knowledge.json --text "What is Whisper?"
-python -m pytest -q
+python examples/custom_task.py
 ```
 
-`--demo` 是确定性的离线演示，不是大模型。真实模型使用 `AGENT_BASE_URL`、
-`AGENT_MODEL`、`AGENT_API_KEY` 配置；API 和本地服务均须兼容 Chat Completions。
-依赖供应商和模型能力，可能需要把 `AGENT_RESPONSE_FORMAT` 改为 `text`。
-接口兼容测试不等同于已验证所有供应商或本地模型。
+`--demo` 使用确定性的离线响应。省略 `--text` 可进入交互模式。
+
+## 模型配置
+
+在 shell 中设置 `AGENT_BASE_URL`、`AGENT_MODEL`、`AGENT_API_KEY`，去掉 `--demo`
+即可调用模型。配置见 [`.env.example`](.env.example) 和 [英文说明](README.md#model-configuration)。
+`AGENT_RESPONSE_FORMAT` 支持 `json_object`（默认）、`json_schema` 和 `text`。
 
 ## 语音输入
 
 ```bash
 python -m pip install -e ".[voice]"
-voice-agent --demo --app interviewer --context examples/interviewer.json --record 5 --language zh
-voice-agent --demo --app knowledge --context examples/knowledge.json --audio question.wav
+voice-agent --app interviewer --context examples/interviewer.json --record 5 --language zh
+voice-agent --app knowledge --context examples/knowledge.json --audio question.wav
 ```
 
-只有显式指定 `--record` 才会打开麦克风。模型首次加载可能下载权重；可通过
-`--asr-model` 指定已有模型目录。当前处理完整的一段录音，不提供流式识别、TTS 或打断。
-离线测试验证语音适配层与核心之间的数据流；实际麦克风、识别效果和真实模型需要单独验收。
+Whisper 按完整音频片段转写，默认使用 CPU/int8。`--asr-model` 可指定模型名称或本地目录。
+麦克风录音需要 PortAudio 和系统权限。GPU 配置见 [英文说明](README.md#voice-input)。
 
-## 可靠性设计
+## 会话与扩展
 
-- 限制每轮时间、模型调用时间、工具调用次数和输出修复次数。
-- 工具使用 Pydantic 参数模型、名称白名单及重复调用检测。
-- SQLite 保存版本化会话和已完成请求；同一请求重放不会再次调用模型。
-- 请求处理和状态提交分离，取消或提交失败不会发布半个会话轮次。
-- 异常返回明确降级结果，不把模型故障包装成成功回答。
-- 只读工具优先；当前不支持有外部写入副作用的工具，也不声称“恰好执行一次”。
+使用相同的 `--app` 和 `--db`，通过 `--session SESSION_ID` 继续会话。
+使用相同请求 ID 和文本可重放已完成的结果。任务配置或工具结构变化后需创建新会话。
 
-同一会话同时只处理一个请求。进程崩溃后，先停止旧进程，再用 `--recover` 释放
-未完成请求。运行数据库包含对话内容，属于本地私有数据，不应加入源码仓库。
+进程崩溃后，先停止旧进程，再释放未完成请求：
 
-更多运行命令见 [英文 README](README.md)，提取关系见 [来源说明](docs/PROVENANCE.md)，
-验证范围见 [验证记录](docs/VALIDATION.md)。
+```bash
+voice-agent --db sessions.sqlite3 --session SESSION_ID --recover
+```
+
+通过 `TaskSpec` 定义目标、指令和预算，通过 `ToolRegistry` 注册带类型参数的异步只读工具，
+再提供会话上下文即可接入新任务。参考 [自定义任务示例](examples/custom_task.py)。
+
+## 开发
+
+```bash
+python -m pytest -q
+python -m ruff check .
+python -m ruff format --check .
+python -m build
+```
+
+## 代码来源
+
+Agent 组件基于 [Fujizzz/AiInterviewer](https://github.com/Fujizzz/AiInterviewer)。
