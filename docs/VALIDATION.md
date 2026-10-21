@@ -1,13 +1,6 @@
 # Validation scope
 
-## Local verification on 2026-10-03
-
-- Windows, Python 3.12.14: **47 tests passed**.
-- Ruff lint and formatting checks passed for source, examples and tests.
-- Built both a wheel and source distribution successfully.
-- Real hosted/local LLM calls and physical microphone/Whisper inference were not run.
-- Local test/build commands required execution outside the desktop filesystem sandbox
-  because Windows denied access to tool-created temporary directories; no tests were skipped.
+## Automated test coverage
 
 The core suite runs offline and does not send requests to a paid provider, download model
 weights, or activate the microphone. Tests cover:

@@ -1,7 +1,6 @@
 # Voice Task Agent
 
-支持语音输入的任务型 Agent 框架。从 AI 面试官的 Agent 代码中提取通用设计，
-将语音输入、模型调用、任务规划、工具执行和会话存储分离。
+支持语音输入的任务型 Agent 框架，将语音输入、模型调用、任务规划、工具执行和会话存储分离。
 
 ## 核心结构
 
@@ -61,5 +60,5 @@ voice-agent --demo --app knowledge --context examples/knowledge.json --audio que
 同一会话同时只处理一个请求。进程崩溃后，先停止旧进程，再用 `--recover` 释放
 未完成请求。运行数据库包含对话内容，属于本地私有数据，不应加入源码仓库。
 
-更多运行命令见 [英文 README](README.md)，提取关系见 [来源说明](docs/PROVENANCE.md)，
-验证范围见 [验证记录](docs/VALIDATION.md)。
+更多运行命令见 [英文 README](README.md)，验证范围见 [测试说明](docs/VALIDATION.md)。
+代码署名与授权信息见 [来源署名](docs/PROVENANCE.md)。

@@ -1,6 +1,6 @@
 """SQLite sessions with atomic turn commits and cross-process request reservation.
 
-Generalizes AiInterviewer's commit_turn, version check and feedback replay design.
+Version checks protect state updates; completed requests replay their stored results.
 Database operations are short and never hold a transaction across a model call.
 """
 

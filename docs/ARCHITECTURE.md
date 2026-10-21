@@ -19,7 +19,7 @@ also closes the session. Their meaning is application-controlled. The framework 
 the action schema, not the truth of an LLM's assertion that a business task is complete.
 Applications with strict completion criteria must add deterministic domain validation.
 
-## Refactoring boundary
+## Component boundaries
 
 - `ModelPort` is an async structured-output protocol; transport knows nothing about tools or interviews.
 - `TaskSpec` supplies goals, instructions, allowed tools, and budgets.

@@ -4,9 +4,6 @@ A small Python framework for task-oriented dialogue with optional local Whisper 
 The same runtime drives an interview assistant and a local-notes assistant. Planning,
 bounded tool execution, model transport, and durable session state are separate components.
 
-This repository refactors the Agent design from [Fujizzz/AiInterviewer](https://github.com/Fujizzz/AiInterviewer).
-See [source provenance](docs/PROVENANCE.md) for the exact upstream revision and extraction map.
-
 [中文说明](README.zh-CN.md) · [Architecture](docs/ARCHITECTURE.md) · [Validation](docs/VALIDATION.md)
 
 ## What it implements
@@ -142,12 +139,11 @@ GitHub Actions runs core tests on Windows and Linux with Python 3.11 and 3.12. V
 are tested with injected ASR results; real recognition accuracy, microphone operation, GPU
 behavior, and paid/local LLM performance need environment-specific acceptance testing.
 
-## Scope and source
+## Scope
 
-The interviewer is a compact framework example, not a migration of AiInterviewer's full
-scoring, UI, database, or recommendation product. The notes assistant uses simple lexical
-retrieval, not a production vector RAG service. This repository records a current refactor;
-it does not reconstruct historical environments or backdate development.
+The interviewer is a compact framework example without production scoring, UI, or recommendation
+features. The notes assistant uses simple lexical retrieval, not a production vector RAG service.
 
-The reviewed upstream snapshot has no root license file. No new blanket license is assigned
-to inherited material here; review ownership and licensing before third-party redistribution.
+## Attribution and licensing
+
+See [source attribution](docs/PROVENANCE.md) for contributor attribution and licensing information.

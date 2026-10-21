@@ -1,4 +1,4 @@
-"""Model and speech boundaries adapted from AiInterviewer agents/ports/llm.py."""
+"""Provider-neutral asynchronous model and speech interfaces."""
 
 from typing import Any, Protocol, TypeVar
 

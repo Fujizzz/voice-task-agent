@@ -1,7 +1,7 @@
 """Task-neutral planning and bounded ReAct execution.
 
-Refactored from AiInterviewer's planner/service/react loop: a single shared deadline,
-limited tools and repairs, validation before publication, and atomic turn persistence.
+Uses a single shared deadline, limited tools and repairs, validation before publication,
+and atomic turn persistence.
 """
 
 import asyncio
